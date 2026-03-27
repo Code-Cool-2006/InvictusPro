@@ -4,22 +4,29 @@ const { protect } = require("../middleware/auth");
 const Donor = require("../models/Donor");
 
 router.get("/profile", protect, async (req, res) => {
-  const donor = await Donor.findOne({ user: req.user._id });
-  if (donor) {
+  try {
+    // Auto-create profile if it doesn't exist
+    let donor = await Donor.findOneAndUpdate(
+      { user: req.user._id },
+      { $setOnInsert: { user: req.user._id, email: req.user.email } },
+      { new: true, upsert: true }
+    );
     res.json(donor);
-  } else {
-    res.status(404).json({ message: "Donor not found" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 router.put("/profile", protect, async (req, res) => {
-  const donor = await Donor.findOne({ user: req.user._id });
-  if (donor) {
-    Object.assign(donor, req.body);
-    const updatedDonor = await donor.save();
-    res.json(updatedDonor);
-  } else {
-    res.status(404).json({ message: "Donor not found" });
+  try {
+    const donor = await Donor.findOneAndUpdate(
+      { user: req.user._id },
+      { $set: req.body },
+      { new: true, upsert: true }
+    );
+    res.json(donor);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
