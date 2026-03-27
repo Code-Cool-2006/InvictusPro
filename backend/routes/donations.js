@@ -11,10 +11,12 @@ router.get("/my-donations", protect, async (req, res) => {
 
 router.post("/", protect, async (req, res) => {
   const { amount, category, description, quantity, unit } = req.body;
+  const numericAmount = category === "money" ? Number(amount) : undefined;
+
   const donation = await Donation.create({
     donorId: req.user._id,
     donorName: req.user.username,
-    amount: category === "money" ? amount : undefined,
+    amount: numericAmount,
     category,
     description,
     quantity,
@@ -22,21 +24,27 @@ router.post("/", protect, async (req, res) => {
   });
 
   if (donation) {
-    const donor = await Donor.findOne({ user: req.user._id });
-    if (donor) {
-      if (category === "money") {
-        donor.totalDonated += amount;
-      }
-      donor.donationCount += 1;
-      donor.donations.push({
-        id: donation._id,
-        amount: donation.amount,
-        category: donation.category,
-        date: donation.date,
-        status: donation.status,
-      });
-      await donor.save();
-    }
+    // Upsert donor profile so it always exists, then increment totals atomically
+    await Donor.findOneAndUpdate(
+      { user: req.user._id },
+      {
+        $inc: {
+          totalDonated:  category === "money" ? numericAmount : 0,
+          donationCount: 1,
+        },
+        $push: {
+          donations: {
+            id:       donation._id,
+            amount:   donation.amount,
+            category: donation.category,
+            date:     donation.date,
+            status:   donation.status,
+          },
+        },
+        $setOnInsert: { user: req.user._id },
+      },
+      { upsert: true }
+    );
     res.status(201).json(donation);
   } else {
     res.status(400).json({ message: "Invalid donation data" });
