@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "");
+const API = (import.meta.env.VITE_API_URL || "https://invictuspro.onrender.com").replace(/\/$/, "");
 
 export default function PublicDashboard() {
   const navigate = useNavigate();
