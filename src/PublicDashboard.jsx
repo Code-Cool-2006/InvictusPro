@@ -1,23 +1,34 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API = (import.meta.env.VITE_API_URL || "https://invictuspro.onrender.com").replace(/\/$/, "");
 
 export default function PublicDashboard() {
   const navigate = useNavigate();
   const [activities, setActivities] = useState([]);
   const [attendees, setAttendees]   = useState({}); // { actId: [users] }
   const [expanded, setExpanded]     = useState({}); // { actId: bool }
-  const [loading, setLoading]       = useState(true);
+  const [loading,       setLoading]       = useState(true);
+  const [fetchError,    setFetchError]    = useState(null);
   const [search, setSearch]         = useState("");
 
   /* ── Load all public activities ─────────────────── */
   useEffect(() => {
     fetch(`${API}/api/activities/public/activities`)
-      .then(r => r.json())
-      .then(data => { setActivities(Array.isArray(data) ? data : []); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, []);
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(data => {
+        setActivities(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Public activities fetch failed:", err);
+        setFetchError(err.message);
+        setLoading(false);
+      });
+  }, [])
 
   /* ── Toggle attendee list for an activity ────────── */
   const toggleAttendees = async (actId) => {
@@ -136,7 +147,15 @@ export default function PublicDashboard() {
           </div>
         )}
 
-        {!loading && filtered.length === 0 && (
+        {!loading && fetchError && (
+          <div className="text-center py-16 text-slate-500">
+            <span className="material-symbols-outlined text-4xl block mb-3 text-red-400">wifi_off</span>
+            <p className="text-red-400 font-medium">Could not load activities</p>
+            <p className="text-xs mt-1">{fetchError} — check that the backend is running</p>
+          </div>
+        )}
+
+        {!loading && !fetchError && filtered.length === 0 && (
           <div className="text-center py-20 text-slate-500">
             <span className="material-symbols-outlined text-5xl block mb-3">event_busy</span>
             No activities found.

@@ -14,6 +14,11 @@ const notificationRoutes = require("./routes/notifications");
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 const app = express();
+
+// Open CORS for truly public API routes (no auth required, any origin)
+app.use("/api/activities/public", cors());
+
+// Restricted CORS for all other routes — only allow the frontend origin
 app.use(cors({
   origin: process.env.FRONTEND_URL || "http://localhost:5173",
   credentials: true,
