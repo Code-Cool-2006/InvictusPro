@@ -1,16 +1,37 @@
-# React + Vite
+# Invictus
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Invictus is a comprehensive MERN (MongoDB, Express, React, Node.js) stack platform designed to manage and streamline community-driven initiatives through volunteer coordination and donor engagement.
 
-Currently, two official plugins are available:
+## 🚀 Core Platform Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### **1. Secure Authentication & User Roles**
+- **Multi-Role Support**: Admin, Volunteer, and Donor roles with distinct dashboards.
+- **JWT Protection**: Secure API endpoints using middleware.
+- **Profile Initialization**: Automatically creates role-specific profiles.
 
-## React Compiler
+### **2. Volunteer Management**
+- **Dynamic Scheduling**: Weekly availability calendar where volunteers can set specific time slots.
+- **Skill-Tagging System**: Multi-select skill system to match volunteers with relevant tasks.
+- **Activity Tracking**: Logging of volunteer hours, event attendance, and completion status.
+- **Performance Impact**: Cumulative stats for total hours contributed and events attended.
+- **Document Management**: Capability to upload ID proofs for verification.
+- **Certification**: Automated PDF generation for volunteer certificates upon activity completion.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### **3. Donor Engagement**
+- **Flexible Donations**: Support for one-time contributions and monthly recurring giving.
+- **Impact Tracking**: "Impact Score" calculation and donation history log.
+- **Tax Compliance**: Automated PDF receipt generation designed for tax exemption.
+- **Automated Reminders**: Optional email notification system for monthly contributors.
 
-## Expanding the ESLint configuration
+### **4. Administrative Control**
+- **Centralized Management**: Overview of all users (volunteers, donors, admins).
+- **Activity Creation**: Admin ability to post new opportunities with specific skill requirements and volunteer counts.
+- **System Analytics**: Real-time stats on total donations, active volunteers, and user growth.
+- **Data Governance**: Ability to manage and delete user accounts to ensure platform integrity.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🏗️ Technical Architecture
+
+- **Frontend**: React with Vite, Custom Vanilla CSS, Axios
+- **Backend**: Node.js & Express
+- **Database**: MongoDB (Atlas/Local) with Mongoose Object Modeling
+- **Authentication**: JWT (JSON Web Tokens) with `bcryptjs`
