@@ -9,7 +9,7 @@ router.get("/profile", protect, async (req, res) => {
     let donor = await Donor.findOneAndUpdate(
       { user: req.user._id },
       { $setOnInsert: { user: req.user._id, email: req.user.email } },
-      { new: true, upsert: true }
+      { returnDocument: 'after', upsert: true }
     );
     res.json(donor);
   } catch (err) {
@@ -22,7 +22,7 @@ router.put("/profile", protect, async (req, res) => {
     const donor = await Donor.findOneAndUpdate(
       { user: req.user._id },
       { $set: req.body },
-      { new: true, upsert: true }
+      { returnDocument: 'after', upsert: true }
     );
     res.json(donor);
   } catch (err) {
